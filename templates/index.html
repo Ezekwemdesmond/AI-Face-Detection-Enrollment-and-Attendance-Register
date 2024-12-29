@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="text-center">
+    <h2 class="text-3xl font-bold mb-8">Welcome to Face Recognition Attendance System</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <a href="{{ url_for('enroll') }}" class="bg-blue-500 text-white p-6 rounded-lg hover:bg-blue-600">
+            <h3 class="text-xl font-bold mb-2">Enroll New Student</h3>
+            <p>Add new students to the system</p>
+        </a>
+        <a href="{{ url_for('attendance') }}" class="bg-green-500 text-white p-6 rounded-lg hover:bg-green-600">
+            <h3 class="text-xl font-bold mb-2">Mark Attendance</h3>
+            <p>Take attendance using face recognition</p>
+        </a>
+        <a href="{{ url_for('report') }}" class="bg-purple-500 text-white p-6 rounded-lg hover:bg-purple-600">
+            <h3 class="text-xl font-bold mb-2">View Report</h3>
+            <p>Generate attendance reports</p>
+        </a>
+    </div>
+</div>
+{% endblock %}

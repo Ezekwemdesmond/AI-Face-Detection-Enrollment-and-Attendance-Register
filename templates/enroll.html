@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <h2 class="text-2xl font-bold mb-4">Enroll New Student</h2>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="mb-4 p-4 rounded {% if category == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <form id="enrollForm" method="POST" class="space-y-4">
+        <div>
+            <label class="block mb-2">Student Name:</label>
+            <input type="text" name="name" required class="w-full p-2 border rounded">
+        </div>
+        
+        <div class="border rounded p-4">
+            <video id="video" width="100%" autoplay class="mb-4"></video>
+            <canvas id="canvas" style="display: none;"></canvas>
+            <div id="capturedImage" class="hidden mb-4">
+                <img id="preview" class="w-full">
+            </div>
+            <input type="hidden" name="image_data" id="imageData">
+        </div>
+        
+        <div class="flex space-x-4">
+            <button type="button" id="captureBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Capture Photo
+            </button>
+            <button type="submit" id="enrollBtn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" disabled>
+                Enroll Student
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const captureBtn = document.getElementById('captureBtn');
+const imageData = document.getElementById('imageData');
+const preview = document.getElementById('preview');
+const capturedImage = document.getElementById('capturedImage');
+const enrollBtn = document.getElementById('enrollBtn');
+
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+        video.srcObject = stream;
+    })
+    .catch(err => {
+        console.error("Error accessing camera:", err);
+        alert("Error accessing camera. Please make sure you have granted camera permissions.");
+    });
+
+captureBtn.addEventListener('click', () => {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    const data = canvas.toDataURL('image/jpeg');
+    imageData.value = data;
+    preview.src = data;
+    video.style.display = 'none';
+    capturedImage.classList.remove('hidden');
+    enrollBtn.disabled = false;
+    
+    // Stop the camera stream
+    const stream = video.srcObject;
+    const tracks = stream.getTracks();
+    tracks.forEach(track => track.stop());
+});
+
+// Add retake functionality
+capturedImage.addEventListener('click', () => {
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            video.srcObject = stream;
+            video.style.display = 'block';
+            capturedImage.classList.add('hidden');
+            enrollBtn.disabled = true;
+        });
+});
+</script>
+{% endblock %}

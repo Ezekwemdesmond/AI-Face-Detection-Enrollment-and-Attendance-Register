@@ -1,0 +1,15 @@
+<!-- templates/report.html -->
+{% extends "base.html" %}
+{% block content %}
+<div>
+    <h2 class="text-2xl font-bold mb-4">Attendance Report</h2>
+    
+    {% if report %}
+        <div class="overflow-x-auto">
+            {{ report | safe }}
+        </div>
+    {% else %}
+        <p class="text-gray-600">No attendance records found.</p>
+    {% endif %}
+</div>
+{% endblock %}
